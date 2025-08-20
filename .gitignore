@@ -1,0 +1,10 @@
+.env
+design
+.venv
+tests
+ui
+.DS_Store
+repo_alerts
+gpt_gen.py
+gpt_gen_move.py
+gtb_design.txt
