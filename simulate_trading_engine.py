@@ -42,11 +42,14 @@ def main():
     # Set the input date variable. This variable may be used when fetching emails.
     input_date = args.date  # Could be None if not provided
 
-    renko_alert_process = Process(target=monitor_price_alerts, args=(input_date,))
-    renko_alert_process.start()
-    
-    print(f"\nSleeping for {parse_time} seconds to complete alert parsing...\n")
-    time.sleep(parse_time)
+    is_debug_on = True
+
+    if (not is_debug_on):
+        renko_alert_process = Process(target=monitor_price_alerts, args=(input_date,))
+        renko_alert_process.start()
+        
+        print(f"\nSleeping for {parse_time} seconds to complete alert parsing...\n")
+        time.sleep(parse_time)
 
     # Initialize and run the trading engine
 

@@ -5,8 +5,8 @@ from dataclasses import dataclass, field, asdict
 from math import floor
 from typing import Optional, Dict, Any, List, Iterable, Callable, Tuple, Literal
 from datetime import datetime
-from src.common.trends import Trend, trend_of
-from src.assets.options import OptionContract
+from trends import Trend, trend_of
+from options import OptionContract
 from env_utils import get_env_value
 
 @dataclass

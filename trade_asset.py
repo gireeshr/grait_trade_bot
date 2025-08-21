@@ -1,18 +1,25 @@
 from __future__ import annotations
 from dataclasses import dataclass, field, asdict
 from typing import Optional, Dict, Any
-from src.assets.stocks.stocks import Stock
-from src.assets.stocks.stock_config import StockConfig
-from src.common.indicators import Indicator
+from indicators import Indicator
+from dataclasses import dataclass, field, asdict
+from typing import TYPE_CHECKING, Optional, Dict, Any
 
-@dataclass(slots=True)
+if TYPE_CHECKING:
+    from stocks import Stock                  # adjust path to your actual module
+    from stock_config import StockConfig      # adjust path to your actual module
+
+@dataclass
 class DayTradeAsset:
-    stock: Stock
-    config: StockConfig
+    # __slots__ = ("stock","config","qty","entry_price","last_price","trend","previous_trend")  # include all fields you define
+    stock: "Stock"
+    config: "StockConfig"
     indicators: Indicator = field(default_factory=Indicator)
     qty: int = 0
     entry_price: Optional[float] = None
     last_price: Optional[float] = None
+    trend: str | None = None
+    previous_trend: str | None = None
 
     @property
     def symbol(self) -> str: return self.stock.symbol

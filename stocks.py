@@ -5,9 +5,14 @@ from dataclasses import dataclass, field, asdict
 from math import floor
 from typing import Optional, Dict, Any, List, Iterable, Callable, Tuple, Literal
 from datetime import datetime
-from src.common.trends import Trend, trend_of
-from src.assets.options import OptionContract
-from src.assets.stocks.stock_config import AssetConfig
+from trends import Trend, trend_of
+from options import OptionContract
+from stock_config import StockConfig
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    # match your actual module name/path; use local if files sit together
+    from trade_asset import DayTradeAsset
 
 # --------------------------- Stocks + Options model --------------------------
 Side = Literal["LONG","SHORT"]
@@ -15,7 +20,7 @@ Right = Literal["C","P"]
 
 
 @dataclass
-class TradeAsset:
+class Stock:
     def __init__(
         self,
         symbol : Optional[str] = None,
@@ -72,9 +77,26 @@ class TradeAsset:
     previous_trend: Trend = None
 
     # Asset configuration
-    stock_config = AssetConfig(symbol)
+    # stock_config = StockConfig(symbol)
 
     _cached: Dict[str, Any] = field(default_factory=dict, repr=False)
+
+    def __post_init__(self) -> None:
+        if self.config is None:
+            # runtime import to avoid circular import problems
+            try:
+                from stock_config import StockConfig
+            except ImportError:
+                from stock_config import StockConfig  # fallback if you use src.*
+            # try common constructor shapes
+            try:
+                self.config = StockConfig(symbol=self.symbol)
+            except TypeError:
+                try:
+                    self.config = StockConfig(sym=self.symbol)
+                except TypeError:
+                    self.config = StockConfig()
+                    if hasattr(self.config, "symbol"): self.config.symbol = self.symbol
 
     # Utilities
     def touch(self) -> None: self.updated_at = datetime.utcnow().isoformat(timespec="seconds")+"Z"
@@ -204,11 +226,11 @@ class TradeAsset:
     # Persistence
     def to_dict(self) -> Dict[str, Any]: d = asdict(self); d.pop("_cached", None); return d
     @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DayTradeAsset: return cls(**d)
+    def from_dict(cls, d: Dict[str, Any]) -> "DayTradeAsset": return cls(**d)
     @staticmethod
-    def save_watchlist(items: List[DayTradeAsset], path: str) -> None:
+    def save_watchlist(items: List["DayTradeAsset"], path: str) -> None:
         with open(path, "w", encoding="utf-8") as f: json.dump([i.to_dict() for i in items], f, indent=2)
     @staticmethod
-    def load_watchlist(path: str) -> List[DayTradeAsset]:
+    def load_watchlist(path: str) -> List["DayTradeAsset"]:
         with open(path, "r", encoding="utf-8") as f: data = json.load(f)
         return [DayTradeAsset.from_dict(x) for x in data]

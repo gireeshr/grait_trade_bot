@@ -25,7 +25,7 @@ class IndicatorSeries:
         return list(self.values)[-n:]
 
 @dataclass
-class IndicatorValue:
+class Indicator:
     # we mirror your file-provided indicators directly
     price: IndicatorSeries = field(default_factory=lambda: IndicatorSeries(maxlen=2048))
     sma20: IndicatorSeries = field(default_factory=lambda: IndicatorSeries(maxlen=2048))

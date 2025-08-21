@@ -50,9 +50,9 @@ def main():
 
     # Initialize and run the trading engine
 
-    engine = TradingEngine()  # adjust interval as needed 
+    # engine = TradingEngine()  # adjust interval as needed 
     
-    engine.run()
+    # engine.run()
 
 
 if __name__ == "__main__":
