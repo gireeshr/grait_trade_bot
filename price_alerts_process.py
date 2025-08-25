@@ -9,8 +9,8 @@ from multiprocessing import Process
 # Add the "src" directory to the module search path.
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "src"))
 
-from src.common.trading_engine import TradingEngine
-from src.common.price_alerts import monitor_price_alerts
+# from src.common.trading_engine import TradingEngine
+from price_alerts import monitor_price_alerts
 
 def main():
     # args = parse_args()
